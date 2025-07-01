@@ -1,0 +1,44 @@
+.purchase-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.purchase-card {
+  background-color: #1a1a1a;
+  padding: 20px;
+  margin:20px 0;
+  border-radius: 8px;
+  /* height: 520px; */
+  height: auto;
+  width: 350px;
+  border: 1px solid #333;
+  box-shadow: 0 0 15px rgba(0, 230, 230, 0.4);
+  transition: transform 0.3s ease;
+}
+
+.purchase-card:hover {
+  transform: translateY(-5px);
+  border-color: #00e6e6;
+}
+.purchase-card img {
+  width: 100%;
+  height: 300px;
+  border-radius: 6px;
+}
+
+.purchase-card h3 {
+  color: #00e6e6;
+  margin-bottom: 10px;
+}
+
+.purchase-card p {
+  color: #ccc;
+  margin-bottom: 20px;
+}
+.purchase-error{
+  color: #ff6363;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+}

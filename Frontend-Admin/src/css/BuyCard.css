@@ -1,0 +1,54 @@
+.buy-card {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  border: 1px solid #333;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: #ccc;
+  transition: transform 0.3s ease;
+}
+
+.buy-card:hover {
+  transform: translateY(-5px);
+  border-color: #00e6e6;
+}
+
+.buy-card img {
+  width: 100%;
+  height: 250px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.buy-card h3 {
+  color: #00e6e6;
+  margin: 15px 0 10px;
+}
+
+.buy-card p {
+  margin: 10px 0;
+}
+
+.buy-price {
+  font-weight: bold;
+  color: #00ffcc;
+}
+
+.buy-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  background-color: #00e6e6;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 15px;
+}
+
+.buy-btn:hover {
+  background-color: #00b3b3;
+  transform: scale(1.05);
+}

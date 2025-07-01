@@ -1,0 +1,153 @@
+/* Footer Styles */
+
+
+/* Footer container */
+.footer {
+  background-color: #1a1a1a;
+  color: #dcdcdc;
+  padding: 40px 20px;
+  text-align: left;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-top: 15px;
+}
+
+/* Footer content: flexbox layout */
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* Footer column styles */
+.footer-column {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Footer logo */
+.footer-logo img {
+  max-height: 50px;
+  width: auto;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+/* Footer description text */
+.footer-description {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Footer section titles */
+.footer-column h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #00e6e6;
+}
+
+/* Footer links */
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+  color: #dcdcdc;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.footer-column ul li a:hover {
+  color: #00e6e6;
+}
+
+/* Newsletter form */
+.newsletter-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.newsletter-form input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+.newsletter-form button {
+  padding: 8px 15px;
+  font-size: 14px;
+  background-color: #00e6e6;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-top: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.newsletter-form button:hover {
+  background-color: #009999;
+}
+
+/* Footer social icons */
+.footer-social {
+  margin-top: 20px;
+}
+
+.footer-social a {
+  color: #dcdcdc;
+  margin: 0 10px;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+  color: #00e6e6;
+}
+
+/* Footer bottom */
+.footer-bottom {
+  margin-top: 30px;
+  border-top: 1px solid #333;
+  padding-top: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Responsive for small screens */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-column {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .footer-column ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+}

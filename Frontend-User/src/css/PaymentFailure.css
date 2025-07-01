@@ -1,0 +1,98 @@
+.payment-failed-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  background-color: #121212;
+}
+
+.failed-card {
+  background-color: #1a1a1a;
+  padding: 40px;
+  border-radius: 10px;
+  width: 450px;
+  text-align: center;
+  border: 1px solid #333;
+  box-shadow: 0 0 15px rgba(255, 80, 80, 0.4);
+}
+
+.failed-card h1 {
+  color: #ff4d4d;
+  margin-bottom: 15px;
+  font-size: 28px;
+}
+
+.failed-card p {
+  color: #ccc;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.failed-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff4d4d;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.failed-btn:hover {
+  background-color: #cc0000;
+  transform: scale(1.05);
+}
+
+/* Cross animation */
+
+.cross-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cross-circle {
+  width: 80px;
+  height: 80px;
+  background-color: #1a1a1a;
+  border-radius: 50%;
+  border: 4px solid #ff4d4d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: pulse-red 1s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
+}
+
+.cross-icon {
+  width: 40px;
+  height: 40px;
+  stroke: #ff4d4d;
+  animation: popIn 0.5s ease forwards;
+}
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0px rgba(255, 77, 77, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(255, 77, 77, 0.5);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

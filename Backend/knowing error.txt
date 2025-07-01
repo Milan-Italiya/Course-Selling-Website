@@ -1,0 +1,5 @@
+error: 
+{
+    "errors": "Cast to ObjectId failed for value \"{ _id: 'top' }\" (type Object) at path \"_id\" for model \"Course\""
+}
+sol: move the routes like up or down as per given using ALT + arrow key

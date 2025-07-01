@@ -1,0 +1,85 @@
+.admin-sidebar {
+  width: 220px;
+  background-color: #1a1a1a;
+  color: #ddd;
+  padding: 30px 20px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+}
+
+.admin-sidebar.collapsed {
+  width: 50px;
+  padding: 30px 10px; /* smaller padding when collapsed */
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-sidebar.collapsed .sidebar-header {
+  justify-content: center;
+}
+
+.admin-sidebar h2 {
+  font-size: 20px;
+  color: #00e6e6;
+  margin: 0;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #00e6e6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.hamburger-btn:hover{
+  transform: scale(1.10);
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 20px 0 0 0;
+  margin: 0;
+}
+
+.admin-sidebar ul li {
+  padding: 12px 0 12px 15px;
+  cursor: pointer;
+  color: #ccc;
+  border-bottom: 1px solid #333;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.admin-sidebar ul li:hover {
+  border-left: 3px solid #00e6e6;
+  background-color: rgba(0, 230, 230, 0.05);
+  color: #00e6e6;
+  font-weight: bold;
+}
+
+.admin-sidebar ul li:last-child {
+  border-bottom: none;
+}
+
+.admin-sidebar ul li:last-child:hover {
+  border-left: 3px solid #ff6363;
+  background-color: rgba(255, 99, 99, 0.1);
+  color: #ff6363;
+  font-weight: bold;
+}
+
+.admin-sidebar ul li.active {
+  border-left: 3px solid #00e6e6;
+  background-color: rgba(0, 230, 230, 0.05);
+  color: #00e6e6;
+  font-weight: bold;
+}

@@ -1,0 +1,148 @@
+.course-container {
+  max-width: 1200px;
+  margin: 40px;
+  color: #ffffff;
+}
+
+.add-course{
+  font-size: 18px;
+  margin-right: 15px;
+  font-weight: 400;
+}
+
+.course-heading {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #00e6e6;
+}
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  margin: 20px auto;
+}
+
+.search-container i {
+  position: absolute;
+  left: 14px;
+  top: 55%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 16px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 14px 14px 14px 40px; /* Left padding for the icon */
+  border-radius: 6px;
+  border: 1px solid #333;
+  font-size: 16px;
+  background-color: #2c2c2c;
+  color: #ddd;
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.search-container input:focus {
+  border-color: #00e6e6;
+  background-color: #333;
+  outline: none;
+}
+
+
+/* course-card css */
+
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* MEDIUM width */
+  gap: 20px;
+}
+
+.course-card {
+  background-color: #1a1a1a;
+  padding: 18px; /* slightly tighter padding */
+  margin: 20px 0;
+  border-radius: 6px;
+  height: auto;
+  width: 300px;  /* Medium width */
+  border: 1px solid #333;
+  box-shadow: 0 0 12px rgba(0, 230, 230, 0.4);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  border-color: #00e6e6;
+}
+
+.course-card img {
+  width: 100%;
+  height: 220px;  /* Medium image height */
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.course-card h3 {
+  font-size: 20px;  /* Medium heading */
+  color: #00e6e6;
+  margin: 12px 0 8px;
+}
+
+.course-card p {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.course-btn-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.course-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #00e6e6;
+  color: #111;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.course-btn:hover {
+  background-color: #00b3b3;
+  transform: scale(1.05);
+}
+
+.course-error{
+  color: #ff6363;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* add icon style */
+
+/* Parent wrapper: pushes any children to the far right */
+.icon-right {
+  display: flex;          /* enable flexbox */
+  justify-content: flex-end; /* align items to the right */
+  margin-bottom: 20px;    /* optional spacing below the icon */
+}
+
+/* Icon styling — tweak size/color to match your theme */
+.add-course-icon {
+  font-size: 28px;        /* slightly larger icon */
+  color: #00e6e6;         /* teal accent */
+  cursor: pointer;
+  margin-right: 20px;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+/* Hover effect */
+.add-course-icon:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+}
