@@ -1,0 +1,189 @@
+/* HERO SECTION */
+
+
+.hero{
+    width: 100%;
+    padding: 70px 20px;
+    background: linear-gradient(to right, #05060a, #0d1117);
+    color: white;
+}
+
+/* CONTAINER */
+
+.hero-container{
+    width: 100%;
+
+    max-width: 1300px;
+
+    margin: auto;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 50px;
+
+    flex-wrap: wrap;
+}
+
+/* CONTENT */
+
+.hero-content{
+    flex: 1;
+
+    min-width: 300px;
+}
+
+.hero-content span{
+    display: inline-block;
+
+    color: #00e6e6;
+
+    background: rgba(0,230,230,0.08);
+
+    padding: 8px 18px;
+
+    border-radius: 30px;
+
+    font-size: 0.9rem;
+
+    margin-bottom: 20px;
+
+    border: 1px solid rgba(0,230,230,0.2);
+}
+
+.hero-content h1{
+    font-size: 4rem;
+
+    line-height: 1.2;
+
+    margin-bottom: 25px;
+
+    color: #00e6e6;
+
+    font-weight: 800;
+    /* overflow-wrap: break-word;
+    word-break: break-word; */
+}
+
+.hero-content p{
+    font-size: 1.05rem;
+
+    line-height: 1.9;
+
+    color: #d6d6d6;
+
+    max-width: 600px;
+
+    margin-bottom: 35px;
+}
+
+/* BUTTONS */
+
+.hero-buttons{
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    flex-wrap: wrap;
+}
+
+.hero-btn{
+    background: #00e6e6;
+
+    color: black;
+
+    padding: 14px 28px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    transition: 0.3s ease;
+}
+
+.hero-btn:hover{
+    background: #00caca;
+
+    transform: translateY(-3px);
+}
+
+.hero-outline-btn{
+    border: 1px solid #00e6e6;
+
+    color: #00e6e6;
+
+    padding: 14px 28px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    transition: 0.3s ease;
+}
+
+.hero-outline-btn:hover{
+    background: #00e6e6;
+
+    color: black;
+}
+
+/* IMAGE */
+
+.hero-image{
+    flex: 1;
+
+    min-width: 300px;
+
+    text-align: center;
+}
+
+.hero-image img{
+    width: 100%;
+
+    max-width: 520px;
+
+    border-radius: 20px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:992px){
+
+    .hero-content h1{
+        font-size: 3rem;
+    }
+}
+
+@media(max-width:768px){
+
+    .hero-container{
+        flex-direction: column-reverse;
+
+        text-align: center;
+    }
+
+    .hero-content p{
+        margin: auto auto 30px;
+    }
+
+    .hero-buttons{
+        justify-content: center;
+    }
+
+    .hero-content h1{
+        font-size: 2.4rem;
+    }
+
+    .hero-image img{
+        max-width: 400px;
+    }
+}

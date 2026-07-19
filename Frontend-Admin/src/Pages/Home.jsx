@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Footer from '../components/Footer.jsx'
 import Hero from '../components/Hero.jsx'
 import Slider from '../components/Scroller.jsx'
@@ -19,7 +19,7 @@ const Home = () => {
     if (!sessiontoken) {
       navigate('/admin/login', { state: { loginerrMessage: 'please login first to access admin dashboard' } });
     }
-    if (location.state && location.state.loginMessage) {
+    if (location?.state && location?.state?.loginMessage) {
       toast.success(location.state.loginMessage)
     }
   }, [])

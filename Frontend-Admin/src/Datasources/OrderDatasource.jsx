@@ -81,3 +81,44 @@ export const getRecentOrders = async () => {
         throw error
     }
 }
+
+export const getOrderDetail = async (orderId) => {
+    const token = sessionStorage.getItem("token")
+    try {
+        const response = await fetch(
+            `http://localhost:5000/api/v1/order/${orderId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+        const data = await response.json();
+        return data
+    } catch (error) {
+        console.log('Error in getting order details:', error.message)
+        throw error
+    }
+}
+
+export const updateOrderData = async (orderId, orderData) => {
+    const token = sessionStorage.getItem("token")
+    try {
+        const response = await fetch(
+            `http://localhost:5000/api/v1/order/update/${orderId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(orderData),
+            }
+        );
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.log('Error in updating order details:', error.message)
+        throw error
+    }
+}

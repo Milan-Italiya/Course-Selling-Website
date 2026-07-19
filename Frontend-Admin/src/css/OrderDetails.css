@@ -1,0 +1,32 @@
+.order-details-heading{
+  color: #00e6e6;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.order-details-card {
+  background-color: #1a1a1a;
+  color: #ddd;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.order-detail {
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.order-detail:last-child {
+  border-bottom: none;
+}
+
+.order-error {
+  color: #ff4d4d;
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+}

@@ -3,8 +3,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { Purchase } from "../models/purchase.model.js";
 import config from "../config.js";
 
-
-export const CreateCourse = async (req, res) => {
+export const createCourse = async (req, res) => {
   const adminId = req.adminId;
   try {
     const { title, description, price, category, language } = req.body;
@@ -48,15 +47,17 @@ export const CreateCourse = async (req, res) => {
     });
     await newCourse.save();
 
-    return res
-      .status(201)
-      .json({ message: "Course created", course: newCourse });
+    return res.status(201).json({
+      success: true,
+      message: "Course created Successfully!",
+      course: newCourse,
+    });
   } catch (err) {
     return res.status(500).json({ errors: err.message });
   }
 };
 
-export const UpdateCourse = async (req, res) => {
+export const updateCourse = async (req, res) => {
   const adminId = req.adminId;
   const { courseId } = req.params;
   const { title, description, price, category, language } = req.body;
@@ -67,21 +68,39 @@ export const UpdateCourse = async (req, res) => {
       return res.status(404).json({ errors: "Course not found" });
     }
 
-    let updatedImage = courseFind.image; // default to existing image
+    let updatedImage = courseFind.image; // Defaults to existing image configuration
 
-    // Check if new image is uploaded
-    if (req.file) {
-      // You must have multer middleware configured in your route to populate req.file
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "courses",
-      });
+    // FIX 1: Use req.files (matches your CreateCourse parsing layout)
+    if (req.files && req.files.image) {
+      const { image } = req.files;
+
+      const imageFormat = ["image/png", "image/jpeg", "image/jpg"];
+      if (!imageFormat.includes(image.mimetype)) {
+        return res
+          .status(400)
+          .json({ errors: "Only PNG and JPG image formats are allowed" });
+      }
+
+      // Uploading to Cloudinary using the correct temporary file path
+      const cloud_response = await cloudinary.uploader.upload(
+        image.tempFilePath,
+        {
+          folder: "courses",
+        },
+      );
+
+      if (!cloud_response || cloud_response.error) {
+        return res.status(500).json({ errors: "Cloudinary upload failed" });
+      }
+
       updatedImage = {
-        public_id: result.public_id,
-        url: result.secure_url,
+        public_id: cloud_response.public_id,
+        url: cloud_response.secure_url || cloud_response.url,
       };
     }
 
-    const course = await Course.findOneAndUpdate(
+    // FIX 2: Added { new: true } option to pass back the updated course object instead of the stale data
+    const updatedCourse = await Course.findOneAndUpdate(
       { _id: courseId, creatorId: adminId },
       {
         title,
@@ -90,40 +109,74 @@ export const UpdateCourse = async (req, res) => {
         image: updatedImage,
         category,
         language,
-      }
+      },
+      { new: true }, // <--- CRITICAL: Returns the modified document to the client
     );
 
-    if (!course) {
-      res.status(404).json({ errors: "Can't update this course because it is created by other admin" });
+    if (!updatedCourse) {
+      // Use return statement here to halt execution and avoid double response errors
+      return res.status(404).json({
+        errors:
+          "Can't update this course because it was created by another admin",
+      });
     }
 
-    res.status(200).json({ message: "Course updated successfully", course });
+    return res.status(200).json({
+      success: true,
+      message: "Course updated successfully",
+      course: updatedCourse,
+    });
   } catch (error) {
-    console.log("error in update course : ", error);
-    return res.status(500).json({ errors: error.message });
+    console.log("Error in update course: ", error);
+    return res.status(500).json({ success: false, errors: error.message });
   }
 };
 
-
-export const DeleteCourse = async (req, res) => {
+export const deleteCourse = async (req, res) => {
   const adminId = req.adminId;
   const { courseId } = req.params;
+
   try {
-    const course = await Course.findOneAndDelete({
+    const course = await Course.findOne({
       _id: courseId,
       creatorId: adminId,
     });
+
     if (!course) {
-      return res.status(404).json({ errors: "Can't delete this course because it is created by other admin" });
+      return res.status(404).json({
+        success: false,
+        errors:
+          "Can't delete this course because it is created by another admin",
+      });
     }
-    return res.status(200).json({ message: "Course deleted successfully" });
+
+    const purchaseExists = await Purchase.findOne({
+      courseId,
+    });
+
+    if (purchaseExists) {
+      return res.status(400).json({
+        success: false,
+        errors: "This course has enrolled students and cannot be deleted.",
+      });
+    }
+
+    await Course.findByIdAndDelete(courseId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Course deleted successfully",
+    });
   } catch (error) {
-    console.log("error in delete course : ", error);
-    return res.status(500).json({ errors: error.message });
+    console.log("Error in delete course:", error);
+    return res.status(500).json({
+      success: false,
+      errors: error.message,
+    });
   }
 };
 
-export const GetCourses = async (req, res) => {
+export const getCourses = async (req, res) => {
   try {
     const course = await Course.find({});
     res.status(200).json({ message: "All courses", course });
@@ -133,7 +186,7 @@ export const GetCourses = async (req, res) => {
   }
 };
 
-export const CourseDetails = async (req, res) => {
+export const courseDetails = async (req, res) => {
   const { courseId } = req.params;
   try {
     const course = await Course.findById({ _id: courseId });
@@ -152,64 +205,122 @@ const stripe = new Stripe(config.STRIPE_SECRET_KEY);
 
 console.log("stripe key: ", config.STRIPE_SECRET_KEY);
 
-
 // stripe integration
-export const BuyCourses = async (req, res) => {
+export const buyCourses = async (req, res) => {
   const { userId } = req;
   const { courseId } = req.params;
 
   try {
     const course = await Course.findById(courseId);
+
     if (!course) {
-      return res.status(404).json({ errors: "Course not found" });
+      return res.status(404).json({
+        success: false,
+        errors: "Course not found",
+      });
     }
 
-    const existingPurchase = await Purchase.findOne({ userId, courseId });
-    if (existingPurchase) {
-      return res.status(400).json({ errors: "Course already purchased" });
+    const existingPurchase = await Purchase.findOne({
+      userId,
+      courseId,
+    });
+
+    if (existingPurchase?.status === "Succeeded") {
+      return res.status(400).json({
+        success: false,
+        errors: "Course already purchased",
+        purchase: existingPurchase,
+      });
     }
 
-    const amount = course.price;
+    const amount = Number(course.price);
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        errors: "Invalid course price",
+      });
+    }
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
+      amount: amount * 100,
       currency: "usd",
       payment_method_types: ["card"],
+      metadata: {
+        userId: userId.toString(),
+        courseId: courseId.toString(),
+      },
     });
-    res.status(200).json({
-      message: "Course purchased successfully",
+
+    const purchase = await Purchase.findOneAndUpdate(
+      {
+        userId,
+        courseId,
+      },
+      {
+        $set: {
+          userId,
+          courseId,
+          paymentId: paymentIntent.id,
+          status: "Pending",
+          amount,
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+        runValidators: true,
+        setDefaultsOnInsert: true,
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment started. Course added with pending status.",
       course,
+      purchase,
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
     console.error("Error in buy course: ", error);
-    res.status(500).json({ errors: "Error in buying course" });
+
+    return res.status(500).json({
+      success: false,
+      errors: "Error in buying course",
+    });
   }
 };
 
-export const TopCourses = async (req, res) => {
+export const topCourses = async (req, res) => {
   try {
     const topPurchases = await Purchase.aggregate([
       {
+        $match: {
+          status: "Succeeded",
+        },
+      },
+      {
         $group: {
           _id: "$courseId",
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
-        $sort: { count: -1 }
+        $sort: { count: -1 },
       },
       {
-        $limit: 5
-      }
-    ])
-    console.log("Top Courses: ", topPurchases)
+        $limit: 10,
+      },
+    ]);
+    console.log("Top Courses: ", topPurchases);
 
-    const courseIds = topPurchases.map(p => p._id);
+    const courseIds = topPurchases.map((p) => p._id);
     const courses = await Course.find({ _id: { $in: courseIds } });
-    res.status(200).json({ message: "Top courses", PopularCourses: courses, success: true });
+    res
+      .status(200)
+      .json({ message: "Top courses", PopularCourses: courses, success: true });
   } catch (error) {
-    console.log("Error in getting top courses", error.message)
+    console.log("Error in getting top courses", error.message);
     res.status(500).json({ errors: error.message, success: false });
   }
-}
+};

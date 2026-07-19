@@ -1,203 +1,254 @@
-import React, { useContext, useEffect } from 'react';
-import '../css/AdminDashboard.css';
-import Sidebar from '../components/Sidebar';
-import { CourseContext } from '../Context/CourseContext';
-import { OrderContext } from '../Context/OrderContext';
-import { UserContext } from '../Context/UserContext';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Legend, Cell, FunnelChart, Funnel, LabelList } from 'recharts';
+import React, { useContext, useEffect, useState } from "react";
+import "../css/AdminDashboard.css";
+import Sidebar from "../components/Sidebar";
+import SidebarSkeleton from "../components/Skeleton/SidebarSkeleton";
+import DashboardSkeleton from "../components/Skeleton/DashboardSkeleton";
+
+import { CourseContext } from "../Context/CourseContext";
+import { OrderContext } from "../Context/OrderContext";
+import { UserContext } from "../Context/UserContext";
+
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer
+} from "recharts";
 
 const AdminOverview = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { coursesByCount, fetchCoursesByCount, topCourses, fetchTopCourses } = useContext(CourseContext)
-  const { ordersByCount, fetchOrdersByCount, revenueChart, fetchRevenueChartData, fetchRevenue, revenue, recentOrders, fetchRecentOrders } = useContext(OrderContext)
-  const { userByCount, fetchUsersByCount } = useContext(UserContext)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [showSidebarSkeleton, setShowSidebarSkeleton] = useState(false);
+  const [collapsed, setCollapsed] = useState(false)
+
+
+  const { coursesByCount, fetchCoursesByCount, topCourses, fetchTopCourses } =
+    useContext(CourseContext);
+
+  const {
+    ordersByCount,
+    fetchOrdersByCount,
+    revenueChart,
+    fetchRevenueChartData,
+    fetchRevenue,
+    revenue,
+    recentOrders,
+    fetchRecentOrders
+  } = useContext(OrderContext);
+
+  const { userByCount, fetchUsersByCount } = useContext(UserContext);
+
+  const [loading, setLoading] = useState(true);
+
+
+  // AUTH + LOGIN MESSAGE
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token')
+    const token = sessionStorage.getItem("token");
+
     if (!token) {
-      navigate('/admin/login', { state: { loginerrMessage: 'please login first to admin dashboard' } });
+      navigate("/admin/login", {
+        replace: true,
+        state: { loginerrMessage: "Please login first to admin dashboard" },
+      });
+      return;
     }
 
-    if (location.state && location.state.loginMessage) {
-      toast.success(location.state.loginMessage)
-    }
-  }, [])
+    const loginMessage = location.state?.loginMessage;
 
+    if (loginMessage) {
+      toast.success(loginMessage, {
+        toastId: "admin-login-success",
+      });
+
+      // Clears loginMessage after toast is triggered
+      navigate(location.pathname, {
+        replace: true,
+        state: null,
+      });
+    }
+  }, [location.pathname, location.state, navigate]);
+
+  // SIDEBAR SKELETON (FIRST LOAD + REFRESH)
+  // useEffect(() => {
+  //   const sidebarLoaded = sessionStorage.getItem("admin_sidebar_loaded");
+
+  //   if (!sidebarLoaded) {
+  //     setShowSidebarSkeleton(true);
+
+  //     const timer = setTimeout(() => {
+  //       setShowSidebarSkeleton(false);
+  //       sessionStorage.setItem("admin_sidebar_loaded", "true");
+  //     }, 1200);
+
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, []);
+
+  // FETCH DASHBOARD DATA
   useEffect(() => {
-    try {
-      fetchCoursesByCount()
-      fetchOrdersByCount()
-      fetchUsersByCount()
-      fetchRevenue()
-      fetchTopCourses()
-      fetchRecentOrders()
-      fetchRevenueChartData()
-    } catch (error) {
-      console.log("Error in fetch data: ", error.message)
-    }
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          fetchCoursesByCount(),
+          fetchOrdersByCount(),
+          fetchUsersByCount(),
+          fetchRevenue(),
+          fetchTopCourses(),
+          fetchRecentOrders(),
+          fetchRevenueChartData()
+        ]);
+
+        setTimeout(() => setLoading(false), 1500);
+      } catch (error) {
+        console.error("Dashboard load error:", error);
+      }
+    };
+
+    loadData();
   }, []);
-
-  const COLORS = ['#00e6e6', '#00cccc', '#009999', '#006666', '#003333'];
-
 
   return (
     <>
       <ToastContainer position="top-right" autoClose={2000} />
-      <div id="divider">
+
+      <div id="divider" className={collapsed ? "sidebar-collapsed" : ""}>
         <div className="left-sidebar">
-          <Sidebar />
+          {showSidebarSkeleton ? <SidebarSkeleton /> : <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />}
+          {/* {loading ? <SidebarSkeleton /> : <Sidebar />} */}
         </div>
+
         <div className="right-content">
-          <div className="admin-dashboard">
-            <h1 className='dashboard-heading'>Admin Dashboard</h1>
+          {loading ? (
+            <DashboardSkeleton />
+          ) : (
+            <div className="admin-dashboard">
+              <h1 className="dashboard-heading">Admin Dashboard</h1>
 
-            <div className="admin-stats-grid">
-              <div className="stat-card">
-                <h3>Total Courses</h3>
-                <p>{coursesByCount}</p>
-              </div>
-              <div className="stat-card">
-                <h3>Registered Users</h3>
-                <p>{userByCount}</p>
-              </div>
-              <div className="stat-card">
-                <h3>Total Orders</h3>
-                <p>{ordersByCount}</p>
-              </div>
-              <div className="stat-card">
-                <h3>Total Revenue</h3>
-                <p>₹ {revenue}</p>
-              </div>
-            </div>
+              {/* STATS */}
+              <div className="admin-stats-grid">
+                <div className="stat-card">
+                  <h3>Total Courses</h3>
+                  <p>{coursesByCount}</p>
+                </div>
 
-            <div className="chart-container">
-              <h2>Revenue Chart</h2>
+                <div className="stat-card">
+                  <h3>Registered Users</h3>
+                  <p>{userByCount}</p>
+                </div>
 
-              {/* Bar Chart */}
-              {/* <ResponsiveContainer width="100%" height={500}>
-                <PieChart>
-                  <Pie
+                <div className="stat-card">
+                  <h3>Total Orders</h3>
+                  <p>{ordersByCount}</p>
+                </div>
+
+                <div className="stat-card">
+                  <h3>Total Revenue</h3>
+                  <p>₹ {revenue}</p>
+                </div>
+              </div>
+
+              {/* REVENUE CHART */}
+              <div className="chart-container">
+                <h2>Revenue Chart</h2>
+
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart
                     data={revenueChart}
-                    dataKey="totalRevenue"
-                    nameKey="title"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={120}
-                    labelLine={true}
-                    fill="#00e6e6"
-                    label={({ title }) => title}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 70 }}
                   >
-                    {revenueChart.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer> */}
-
-              {/* Funnel Chart */}
-              <ResponsiveContainer width="100%" height={400}>
-                <FunnelChart>
-                  <defs>
-                    <linearGradient id="funnelGradient" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#00e6e6" stopOpacity={1} />
-                      <stop offset="100%" stopColor="#006666" stopOpacity={0.8} />
-                    </linearGradient>
-                  </defs>
-
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #00e6e6', color: '#ddd' }}
-                    cursor={{ fill: 'rgba(0, 230, 230, 0.1)' }}
-                  />
-
-                  <Funnel
-                    dataKey="totalRevenue"
-                    data={revenueChart}
-                    isAnimationActive
-                    stroke="#00e6e6"
-                    fill="url(#funnelGradient)"
-                  >
-                    <LabelList
-                      position="right"
-                      fill="#ddd"
-                      stroke="none"
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
                       dataKey="title"
-                      style={{ fontSize: '14px' }}
+                      angle={-20}
+                      textAnchor="end"
+                      interval={0}
+                      fontSize={13}
                     />
-                  </Funnel>
-                </FunnelChart>
-              </ResponsiveContainer>
-            </div>
+                    <YAxis />
+                    <Tooltip />
+                    <Bar
+                      dataKey="totalRevenue"
+                      fill="#00e6e6"
+                      radius={[10, 10, 5, 5]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
 
-            <div className="top-courses">
-              <h2>Top Courses</h2>
-              {topCourses && topCourses.length > 0 ? (
-                <table className="top-courses-table">
-                  <thead>
-                    <tr>
-                      <th>Sr No.</th>
-                      <th>Course Title</th>
-                      <th>Price</th>
-                      <th>Language</th>
-                      <th>Category</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {topCourses.map((topCourse, index) => (
-                      <tr key={topCourse._id}>
-                        <td>{index + 1}</td>
-                        <td>{topCourse.title}</td>
-                        <td>₹ {topCourse.price}</td>
-                        <td>{topCourse.language}</td>
-                        <td>{topCourse.category}</td>
+              {/* TOP COURSES */}
+              <div className="top-courses">
+                <h2>Top Courses</h2>
+
+                {topCourses?.length ? (
+                  <table className="top-courses-table">
+                    <thead>
+                      <tr>
+                        <th>Sr No.</th>
+                        <th>Course Title</th>
+                        <th>Price</th>
+                        <th>Language</th>
+                        <th>Category</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p className='no-top-courses'>No top courses.</p>
-              )}
-            </div>
+                    </thead>
+                    <tbody>
+                      {topCourses.slice(0, 5).map((course, index) => (
+                        <tr key={course._id}>
+                          <td>{index + 1}</td>
+                          <td>{course.title}</td>
+                          <td>₹ {course.price}</td>
+                          <td>{course.language}</td>
+                          <td>{course.category}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className="no-top-courses">No top courses.</p>
+                )}
+              </div>
 
-            <div className="recent-orders">
-              <h2>Recent Orders</h2>
-              {recentOrders && recentOrders.length > 0 ? (
-                <table className="recent-orders-table">
-                  <thead>
-                    <tr>
-                      <th>Sr No.</th>
-                      <th>User Email</th>
-                      <th>Course Name</th>
-                      <th>Payment Id</th>
-                      <th>Amount Paid</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentOrders.map((recentOrder, index) => (
-                      <tr key={recentOrder._id}>
-                        <td>{index + 1}</td>
-                        <td>{recentOrder.email}</td>
-                        <td>{recentOrder.courseTitle}</td>
-                        <td>{recentOrder.paymentId}</td>
-                        <td>₹ {recentOrder.amount}</td>
-                        <td>{recentOrder.createdAt.slice(0, 10)}</td>
+              {/* RECENT ORDERS */}
+              <div className="recent-orders">
+                <h2>Recent Orders</h2>
+
+                {recentOrders?.length ? (
+                  <table className="recent-orders-table">
+                    <thead>
+                      <tr>
+                        <th>Sr No.</th>
+                        <th>User Email</th>
+                        <th>Course Name</th>
+                        <th>Payment Id</th>
+                        <th>Amount Paid</th>
+                        <th>Date</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p className='no-recent-orders'>No recent orders.</p>
-              )}
+                    </thead>
+                    <tbody>
+                      {recentOrders.map((order, index) => (
+                        <tr key={order._id}>
+                          <td>{index + 1}</td>
+                          <td>{order.email}</td>
+                          <td>{order.courseTitle}</td>
+                          <td>{order.paymentId}</td>
+                          <td>₹ {order.amount}</td>
+                          <td>{order.createdAt.slice(0, 10)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className="no-recent-orders">No recent orders.</p>
+                )}
+              </div>
             </div>
-
-
-
-          </div>
+          )}
         </div>
       </div>
     </>

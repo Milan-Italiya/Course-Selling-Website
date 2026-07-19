@@ -1,0 +1,139 @@
+/* ===== OVERLAY ===== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+  animation: fadeIn 0.25s ease;
+}
+
+/* ===== MODAL ===== */
+
+.confirm-modal {
+  width: 90%;
+  max-width: 450px;
+
+  background: linear-gradient(145deg, #161616, #1d1d1d);
+
+  border-radius: 20px;
+
+  padding: 30px;
+
+  border: 1px solid rgba(0, 230, 230, 0.15);
+
+  box-shadow:
+    0 0 20px rgba(0, 230, 230, 0.08),
+    0 0 50px rgba(0, 230, 230, 0.05);
+
+  text-align: center;
+
+  animation: modalPop 0.3s ease;
+}
+
+/* ===== TITLE ===== */
+
+.confirm-modal h2 {
+  color: #00e6e6;
+  font-size: 28px;
+  margin-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ===== MESSAGE ===== */
+
+.confirm-modal p {
+  color: #c8c8c8;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 30px;
+}
+
+/* ===== BUTTON CONTAINER ===== */
+
+.modal-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+/* ===== COMMON BUTTON ===== */
+
+.modal-buttons button {
+  flex: 1;
+
+  border: none;
+  border-radius: 12px;
+
+  padding: 13px 16px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+/* ===== CANCEL ===== */
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ===== CONFIRM ===== */
+
+.confirm-btn {
+  background: rgba(255, 99, 99, 0.12);
+  color: #ff6363;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  background: #ff6363;
+  color: white;
+  transform: translateY(-2px);
+
+  box-shadow: 0 0 15px rgba(255, 99, 99, 0.25);
+}
+
+/* ===== DISABLED ===== */
+
+.modal-buttons button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

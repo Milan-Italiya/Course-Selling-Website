@@ -1,43 +1,33 @@
-import React, { useState } from "react";
-import "../css/CreateCourse.css";
+import React, { useContext, useEffect, useState } from "react";
+import "../css/CreateCourse.css"; // Note: You can rename this to CourseForm.css later if shared!
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Sidebar from "../components/Sidebar";
+import { CourseContext } from "../Context/CourseContext";
+import FormSkeleton from "../components/Skeleton/FormSkeleton";
 
 const CreateCourse = () => {
   const navigate = useNavigate();
+  const { fetchCreateCourse } = useContext(CourseContext);
+  const [collapsed, setCollapsed] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [language, setLanguage] = useState("");
+  // Optimized: Bundled individual primitive states into a clean state object
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    price: "",
+    category: "",
+    language: "",
+  });
   const [image, setImage] = useState(null);
   const [imgpreview, setImgpreview] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true)
 
+  // Optimized: Universal input field change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    switch (name) {
-      case "title":
-        setTitle(value);
-        break;
-      case "description":
-        setDescription(value);
-        break;
-      case "price":
-        setPrice(value);
-        break;
-      case "category":
-        setCategory(value);
-        break;
-      case "language":
-        setLanguage(value);
-        break;
-      default:
-        break;
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const changePhotohandler = (e) => {
@@ -54,88 +44,182 @@ const CreateCourse = () => {
 
   const handleCreateCourse = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("category", category);
-    formData.append("language", language);
-    formData.append("image", image);
 
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      navigate("/admin/login");
-      return;
-    }
+    const payload = new FormData();
+    Object.entries(formData).forEach(([key, value]) => payload.append(key, value));
+    payload.append("image", image);
 
     try {
-      setLoading(true)
-      const response = await fetch("http://localhost:5000/api/v1/course/create", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData,
-        credentials: "include"
-      });
+      setLoading(true);
+      const data = await fetchCreateCourse(payload);
 
-      const data = await response.json();
-      // toast.success(data.message || "Course Created Successfully");
+      if (data?.success) {
+        toast.success(data.message || "Course created successfully!");
 
-      // Reset form
-      setTitle("");
-      setDescription("");
-      setPrice("");
-      setCategory("");
-      setLanguage("");
-      setImage(null);
-      setImgpreview("");
-      navigate("/admin/our-courses", { state: { createMessage: data.message } });
-      setLoading(false)
-      console.log("Course created successfully:", data)
+        // Clear Form Object Fields
+        setFormData({
+          title: "",  
+          description: "",
+          price: "",
+          category: "",
+          language: "",
+        });
+        setImage(null);
+        setImgpreview("");
+
+        navigate("/admin/our-courses", {
+          state: {
+            createMessage: data.message || "Course created successfully!",
+          },
+        });
+      } else {
+        toast.error(
+          data?.message || data?.errors || "Failed to create course"
+        );
+      }
     } catch (error) {
-      console.error("Error in course creation", error);
-      toast.error(error.response.data.errors || "Failed to create course");
+      console.error(error);
+      toast.error("Failed to create course");
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPageLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
-      <div id="divider">
+      <ToastContainer position="top-right" autoClose={2000} />
+      <div id="divider" className={collapsed ? "sidebar-collapsed" : ""}>
         <div className="left-sidebar">
-          <Sidebar />
+          <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
         </div>
-        <div className="right-content">
-          <h2 className="create-heading">Create New Course</h2>
-          <div className="create-course-container">
-            <form onSubmit={handleCreateCourse} className="create-course-form" encType="multipart/form-data">
-              <label>Title</label>
-              <input type="text" name="title" value={title} onChange={handleChange} required />
+        {pageLoading ? (
+          <FormSkeleton />
+        ) : (
+          <div className="right-content">
+            <h2 className="create-heading">Create New Course</h2>
+            <div className="create-course-container">
+              <form
+                onSubmit={handleCreateCourse}
+                className="create-course-form"
+                encType="multipart/form-data"
+              >
+                <label>Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="e.g., Ethical Hacking Basics"
+                  required
+                  disabled={loading}
+                  style={{
+                    opacity: loading ? "0.6" : "1",
+                    cursor: loading ? "not-allowed" : "text",
+                  }}
+                />
 
-              <label>Description</label>
-              <textarea name="description" value={description} onChange={handleChange} required />
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Provide a comprehensive course overview detailing curriculum, scope, and objectives..."
+                  required
+                  disabled={loading}
+                  style={{
+                    opacity: loading ? "0.6" : "1",
+                    cursor: loading ? "not-allowed" : "text",
+                  }}
+                />
 
-              <label>Price</label>
-              <input type="number" name="price" value={price} onChange={handleChange} required />
+                <label>Price</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  placeholder="Enter course fee (e.g., 7000)"
+                  required
+                  disabled={loading}
+                  style={{
+                    opacity: loading ? "0.6" : "1",
+                    cursor: loading ? "not-allowed" : "text",
+                  }}
+                />
 
-              <label>Category</label>
-              <input type="text" name="category" value={category} onChange={handleChange} required />
+                <label>Category</label>
+                <input
+                  type="text"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  placeholder="e.g., Cybersecurity, Web Development"
+                  required
+                  disabled={loading}
+                  style={{
+                    opacity: loading ? "0.6" : "1",
+                    cursor: loading ? "not-allowed" : "text",
+                  }}
+                />
 
-              <label>Language</label>
-              <input type="text" name="language" value={language} onChange={handleChange} required />
+                <label>Language</label>
+                <input
+                  type="text"
+                  name="language"
+                  value={formData.language}
+                  onChange={handleChange}
+                  placeholder="e.g., English, Hindi, Spanish"
+                  required
+                  disabled={loading}
+                  style={{
+                    opacity: loading ? "0.6" : "1",
+                    cursor: loading ? "not-allowed" : "text",
+                  }}
+                />
 
-              <label>Course Image</label>
-              {imgpreview && (
-                <div className="image-container">
-                  <img src={imgpreview} alt="Preview" height="150" />
-                </div>
-              )}
-              <input type="file" name="image" onChange={changePhotohandler} accept="image/*" required />
+                <label>Course Image</label>
+                {imgpreview && (
+                  <div className="image-container">
+                    <img src={imgpreview} alt="Preview" height="150" />
+                  </div>
+                )}
+                <input
+                  type="file"
+                  name="image"
+                  onChange={changePhotohandler}
+                  accept="image/*"
+                  required
+                  disabled={loading}
+                  style={{
+                    opacity: loading ? "0.6" : "1",
+                    cursor: loading ? "not-allowed" : "default",
+                  }}
+                />
 
-              <button type="submit">{loading ? "Processing..." : "Create Course"}</button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    opacity: loading ? "0.6" : "1",
+                    cursor: loading ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {loading ? "Course is creating..." : "Create Course"}
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
+        )
+        }
+
       </div>
     </>
   );

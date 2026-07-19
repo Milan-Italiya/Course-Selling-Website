@@ -1,0 +1,22 @@
+/* GLOBAL PAGE FADE ANIMATION */
+
+.page-animation{
+
+    animation:
+        fadeIn 1s ease-in-out;
+}
+
+/* FADE IN */
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity: 0;
+    }
+
+    to{
+
+        opacity: 1;
+    }
+}

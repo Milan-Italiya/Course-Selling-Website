@@ -1,85 +1,188 @@
+/* ===== SIDEBAR ===== */
+
 .admin-sidebar {
-  width: 220px;
-  background-color: #1a1a1a;
-  color: #ddd;
-  padding: 30px 20px;
+  width: 240px;
   height: 100vh;
   position: fixed;
-  left: 0;
   top: 0;
-  transition: width 0.3s ease;
+  left: 0;
+  background: #111111;
+  padding: 22px 16px;
   overflow-x: hidden;
+  transition: all 0.35s ease;
+  border-right: 1px solid rgba(0, 230, 230, 0.12);
+  z-index: 1000;
 }
 
+/* ===== COLLAPSED ===== */
+
 .admin-sidebar.collapsed {
-  width: 50px;
-  padding: 30px 10px; /* smaller padding when collapsed */
+  width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow: visible;
 }
+
+/* ===== HEADER ===== */
 
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 35px;
+  position: relative;
 }
 
-.admin-sidebar.collapsed .sidebar-header {
-  justify-content: center;
-}
+/* ===== TITLE ===== */
 
 .admin-sidebar h2 {
-  font-size: 20px;
-  color: #00e6e6;
-  margin: 0;
-}
-
-.hamburger-btn {
-  background: none;
-  border: none;
   font-size: 22px;
   color: #00e6e6;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ===== HAMBURGER BUTTON ===== */
+
+.hamburger-btn {
+  width: 44px;
+  height: 44px;
+  outline: none;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 230, 230, 0.15);
+  background: #1b1b1b;
+  color: #00e6e6;
+  font-size: 18px;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: absolute;
+  top: 0;
+  right: -5px;
+  z-index: 2000;
 }
-.hamburger-btn:hover{
-  transform: scale(1.10);
+
+/* ===== COLLAPSED BUTTON POSITION ===== */
+
+.admin-sidebar.collapsed .hamburger-btn {
+  left: 15px;
+  top: 20px;
+  right: auto;
+  background: rgba(17, 17, 17, 0.95);
+  border: 1px solid rgba(0, 230, 230, 0.15);
+  box-shadow: 0 0 15px rgba(0, 230, 230, 0.12);
 }
+
+/* ===== BUTTON HOVER ===== */
+
+.hamburger-btn:hover {
+  transform: scale(1.08);
+  /* background: #222; */
+  box-shadow: 0 0 15px rgba(0, 230, 230, 0.12);
+
+}
+
+/* ===== ICON ===== */
+
+.menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s ease;
+}
+
+.menu-icon.open {
+  transform: rotate(180deg);
+}
+
+/* ===== MENU ===== */
 
 .admin-sidebar ul {
   list-style: none;
-  padding: 20px 0 0 0;
+  padding: 0;
   margin: 0;
 }
 
 .admin-sidebar ul li {
-  padding: 12px 0 12px 15px;
+  position: relative;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border-radius: 14px;
   cursor: pointer;
-  color: #ccc;
-  border-bottom: 1px solid #333;
-  transition: all 0.3s ease;
-  border-left: 3px solid transparent;
+  color: #cfcfcf;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.28s ease;
+  background: #181818;
+  border: 1px solid transparent;
 }
+
+/* ===== HOVER ===== */
 
 .admin-sidebar ul li:hover {
-  border-left: 3px solid #00e6e6;
-  background-color: rgba(0, 230, 230, 0.05);
   color: #00e6e6;
-  font-weight: bold;
+  transform: translateX(5px);
+  border-color: rgba(0, 230, 230, 0.18);
+  box-shadow: 0 0 12px rgba(0, 230, 230, 0.08);
 }
 
-.admin-sidebar ul li:last-child {
-  border-bottom: none;
-}
-
-.admin-sidebar ul li:last-child:hover {
-  border-left: 3px solid #ff6363;
-  background-color: rgba(255, 99, 99, 0.1);
-  color: #ff6363;
-  font-weight: bold;
-}
+/* ===== ACTIVE ===== */
 
 .admin-sidebar ul li.active {
-  border-left: 3px solid #00e6e6;
-  background-color: rgba(0, 230, 230, 0.05);
   color: #00e6e6;
-  font-weight: bold;
+  background: #1d1d1d;
+  border-color: rgba(0, 230, 230, 0.2);
+}
+
+.admin-sidebar ul li.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  width: 4px;
+  height: 70%;
+  border-radius: 20px;
+  background: #00e6e6;
+  box-shadow: 0 0 10px #00e6e6;
+}
+
+/* ===== LOGOUT ===== */
+
+.logout {
+  margin-top: 30px;
+  color: #ff6363 !important;
+}
+
+.logout:hover {
+  color: #ff6363 !important;
+  border-color: rgba(255, 99, 99, 0.2) !important;
+  box-shadow: 0 0 12px rgba(255, 99, 99, 0.08);
+}
+
+/* ===== SCROLLBAR ===== */
+
+.admin-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 230, 230, 0.2);
+  border-radius: 20px;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 210px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 0;
+  }
+
+  .admin-sidebar.collapsed .hamburger-btn {
+    left: 12px;
+  }
 }

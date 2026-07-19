@@ -1,0 +1,195 @@
+/* ===================================
+   COURSE PAGE
+=================================== */
+
+.course-container{
+    width: 100%;
+
+    min-height: 100vh;
+
+    padding: 120px 30px 80px;
+
+    background: #05060a;
+}
+
+/* ===================================
+   HEADING
+=================================== */
+
+.course-heading{
+    text-align: center;
+
+    font-size: 3.3rem;
+
+    font-weight: 800;
+
+    color: #00e5ff;
+
+    margin-bottom: 45px;
+
+    letter-spacing: 1px;
+}
+
+/* ===================================
+   SEARCH CONTAINER
+=================================== */
+
+.search-container{
+    width: 100%;
+
+    max-width: 650px;
+
+    margin: 0 auto 60px;
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+}
+
+/* SEARCH ICON */
+
+.search-container i{
+    position: absolute;
+
+    left: 22px;
+
+    color: #00e5ff;
+
+    font-size: 1rem;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+/* SEARCH INPUT */
+
+.search-container input{
+    width: 100%;
+
+    padding: 18px 20px 18px 58px;
+
+    background:
+        linear-gradient(
+            to bottom right,
+            #111111,
+            #171717
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    border-radius: 18px;
+
+    color: white;
+
+    font-size: 1rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        transform 0.3s ease;
+
+    position: relative;
+
+    z-index: 1;
+}
+
+/* PLACEHOLDER */
+
+.search-container input::placeholder{
+    color: #9d9d9d;
+}
+
+/* INPUT FOCUS */
+
+.search-container input:focus{
+    border-color:
+        rgba(0,229,255,0.18);
+
+    background:
+        linear-gradient(
+            to bottom right,
+            #141414,
+            #1c1c1c
+        );
+
+    transform: translateY(-2px);
+}
+
+/* ===================================
+   COURSE CARD GRID
+=================================== */
+
+.course-card-container{
+    width: 100%;
+
+    max-width: 1450px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(340px,1fr));
+
+    gap: 40px;
+}
+
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+
+@media(max-width:992px){
+
+    .course-heading{
+        font-size: 2.7rem;
+    }
+
+    .course-card-container{
+        grid-template-columns:
+            repeat(auto-fit, minmax(300px,1fr));
+    }
+}
+
+@media(max-width:768px){
+
+    .course-container{
+        padding: 110px 18px 70px;
+    }
+
+    .course-heading{
+        font-size: 2.2rem;
+    }
+
+    .search-container{
+        margin-bottom: 45px;
+    }
+
+    .search-container input{
+        padding: 16px 18px 16px 52px;
+    }
+}
+
+@media(max-width:480px){
+
+    .course-heading{
+        font-size: 1.9rem;
+    }
+
+    .search-container input{
+        font-size: 0.95rem;     
+
+        border-radius: 15px;
+    }
+
+    .course-card-container{
+        gap: 25px;
+    }
+}

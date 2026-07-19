@@ -8,6 +8,8 @@ import userRoute from './routes/user.route.js'
 import adminRoute from './routes/admin.route.js'
 import orderRoute from './routes/order.route.js'
 import teamRoute from './routes/team.route.js'
+import curriculumRoute from './routes/curriculum.route.js'
+import coursePlayerRoute from './routes/coursePlayer.routes.js'
 import { v2 as cloudinary } from 'cloudinary';
 import cookieParser from 'cookie-parser'
 
@@ -54,17 +56,20 @@ try {
     console.error("MongoDB connection error:", error);
     process.exit(1);
 }
+
 //-------------- Routes ------------------//
 app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/order", orderRoute)
 app.use("/api/v1/team", teamRoute)
+app.use("/api/v1/curriculum",curriculumRoute)
+app.use("/api/v1/course-player", coursePlayerRoute);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running at address on  http://localhost:${port}`);
 });
